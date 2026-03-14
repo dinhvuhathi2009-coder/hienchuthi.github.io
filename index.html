@@ -88,8 +88,9 @@
         document.getElementById(id).classList.remove('hidden');
     }
 
-    const API_KEY = "AIzaSyAqQs0i-JABON5OviL2rIrgSQTtKo9ebkw"; 
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+    // THAY API KEY THẬT CỦA M VÀO ĐÂY
+    const API_KEY = "AIzaSyDVJPHWCabmpGdZGSaApR-XMmeNse0fkig"; 
+    const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
     async function aiReply() {
         const inputElement = document.getElementById('user-input');
@@ -106,20 +107,28 @@
         box.scrollTop = box.scrollHeight;
 
         try {
-            const response = await fetch(API_URL, {
+            const response = await fetch(`${API_URL}?key=${API_KEY}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     contents: [{
-                        parts: [{ text: `M đóng vai thủ thư tên Hiên, tư vấn sách cho người dùng bằng giọng văn xưng t gọi m thân mật: ${userMsg}` }]
+                        parts: [{ 
+                            text: `M là thủ thư tên Hiên. Danh sách sách hiện có: Đắc Nhân Tâm, Nhà Giả Kim, Súng Vi Trùng và Thép. Hãy tư vấn sách cho người dùng dựa trên yêu cầu của họ bằng giọng văn thân mật (xưng t, gọi m): ${userMsg}` 
+                        }]
                     }]
                 })
             });
+
             const data = await response.json();
-            const aiText = data.candidates[0].content.parts[0].text;
-            document.getElementById(loadingId).innerHTML = `<b>AI:</b> ${aiText}`;
+            
+            if (data.candidates && data.candidates[0].content) {
+                const aiText = data.candidates[0].content.parts[0].text;
+                document.getElementById(loadingId).innerHTML = `<b>AI:</b> ${aiText}`;
+            } else {
+                document.getElementById(loadingId).innerHTML = `<b>AI:</b> API từ chối rồi m ơi, check lại Key đi!`;
+            }
         } catch (error) {
-            document.getElementById(loadingId).innerHTML = `<b>AI:</b> Lỗi rồi m ơi!`;
+            document.getElementById(loadingId).innerHTML = `<b>AI:</b> Lỗi mạng rồi m ơi!`;
         }
         box.scrollTop = box.scrollHeight;
     }
