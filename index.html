@@ -82,57 +82,7 @@
     </div>
 </div>
 
-<script>
-    function showSection(id) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-    }
-
-    // THAY API KEY THẬT CỦA M VÀO ĐÂY
-    const API_KEY = "AIzaSyC8kyOZP-fZM9p7bruQhV8Vce9Fk8whQTw"; 
-    const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
-
-    async function aiReply() {
-        const inputElement = document.getElementById('user-input');
-        const box = document.getElementById('chat-box');
-        const userMsg = inputElement.value.trim();
-        if (!userMsg) return;
-
-        box.innerHTML += `<div class="msg user-msg"><b>M:</b> ${userMsg}</div>`;
-        inputElement.value = "";
-        box.scrollTop = box.scrollHeight;
-
-        const loadingId = "loading-" + Date.now();
-        box.innerHTML += `<div class="msg ai-msg" id="${loadingId}"><b>AI:</b> Đợi t tí...</div>`;
-        box.scrollTop = box.scrollHeight;
-
-        try {
-            const response = await fetch(`${API_URL}?key=${API_KEY}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{ 
-                            text: `M là thủ thư tên Hiên. Danh sách sách hiện có: Đắc Nhân Tâm, Nhà Giả Kim, Súng Vi Trùng và Thép. Hãy tư vấn sách cho người dùng dựa trên yêu cầu của họ bằng giọng văn thân mật (xưng t, gọi m): ${userMsg}` 
-                        }]
-                    }]
-                })
-            });
-
-            const data = await response.json();
-            
-            if (data.candidates && data.candidates[0].content) {
-                const aiText = data.candidates[0].content.parts[0].text;
-                document.getElementById(loadingId).innerHTML = `<b>AI:</b> ${aiText}`;
-            } else {
-                document.getElementById(loadingId).innerHTML = `<b>AI:</b> API từ chối rồi m ơi, check lại Key đi!`;
-            }
-        } catch (error) {
-            document.getElementById(loadingId).innerHTML = `<b>AI:</b> Lỗi mạng rồi m ơi!`;
-        }
-        box.scrollTop = box.scrollHeight;
-    }
-</script>
+<script type="module" src="main.js"></script>
 
 </body>
 </html>
